@@ -1,6 +1,6 @@
 from DataReader import *
-#from BayesClassifier import *
-from BayesClassifierHold import *
+from BayesClassifier import *
+#from BayesClassifierHold import *
 from collections import defaultdict
 
 def eval(sText):
@@ -30,15 +30,15 @@ def eval(sText):
                 print date
                 if risklength == 1:
                     print "invalid document; ignore"
-                #elif bc.classify(tokenstring, risklength, date) == "HOLD":
-                elif bc.classify(tokenstring, risklength) == "HOLD":
+                elif bc.classify(tokenstring, risklength, date) == "HOLD":
+                #elif bc.classify(tokenstring, risklength) == "HOLD":
                     hold += 1
                 else:
                     totaldic[label] +=1
                     total += 1
                         
-                    #if bc.classify(tokenstring, risklength, date) == label:
-                    if bc.classify(tokenstring, risklength) == label:
+                    if bc.classify(tokenstring, risklength, date) == label:
+                    #if bc.classify(tokenstring, risklength) == label:
                         correct += 1
                         totalcorrectdic[label] += 1
                     
