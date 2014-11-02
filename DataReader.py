@@ -22,7 +22,7 @@ class DataReader:
          raise StopIteration
       else:
          #MODIFY HERE
-         return (self.label, self.data, self.company, self.date, self.price, self.risklength)
+         return (self.label, self.data, self.company, self.date, self.price, int(self.risklength[0]))
 
    def readNext(self):
       '''Read and tokenize the next labal/data pair from the file'''
@@ -31,7 +31,6 @@ class DataReader:
       self.company = ""
       self.date = ""
       self.price = ""
-   
       self.risklength = ""
       
 
@@ -53,10 +52,7 @@ class DataReader:
 
          elif line == "</DOC>":
             #IF there is data and there is a label
-                        
-            #Ignores risk length and others for now; that will be changed later
-            if self.data != "" and self.price != "":
-               #and self.company != "" and self.price != "" and self.date != "" and self.risklength != "" :
+            if self.data != "" and self.price != "" and self.risklength != "" and self.company != "" and self.price != "" and self.date != "":
                self.data = tokenize(self.data)
                self.company = tokenize(self.company)
                self.date = tokenize(self.date)
@@ -67,7 +63,7 @@ class DataReader:
                else:
                    self.label = "BUY"
                self.price2 = self.price
-               #self.risklength = tokenize(self.risklength)
+               self.risklength = tokenize(self.risklength)
                break
             else:
                print "company" + self.company + "price" + self.price + "risklength" + self.risklength + "date" + self.date
@@ -108,29 +104,40 @@ def split(dataFile, outputLabel):
    '''Splits data into 80% train, 10% dev and 10% test'''
    reader = DataReader(dataFile)
 
-   train = open(outputLabel + ".train", "w")
-   dev = open(outputLabel + ".dev", "w")
-   test = open(outputLabel + ".test", "w")
+   train0 = open(outputLabel + ".train0", "w")
+   train1 = open(outputLabel + ".train1", "w")
+   train2 = open(outputLabel + ".train2", "w")
+   train3 = open(outputLabel + ".train3", "w")
+   train4 = open(outputLabel + ".train4", "w")
 
    for label, tokens, company, date, price, risklength in reader:
       
-      #MODIFY HERE -- > NOTE: TOOK OUT RISKLENGTH
-      output = "<DOC>\n<LABEL>" + label + "</LABEL>\n" + "<COMPANY>" + company[0] + "</COMPANY>\n" + "<DATE>" + date[0] + "</DATE>\n" + "<PRICE>" + str(price) + "</PRICE>\n" + " ".join(tokens) + "\n</DOC>\n"
+      
+      output = "<DOC>\n<LABEL>" + label + "</LABEL>\n" + "<COMPANY>" + company[0] + "</COMPANY>\n" + "<DATE>" + date[0] + "</DATE>\n" + "<PRICE>" + str(price) + "</PRICE>\n" + "<RISKLENGTH>"+ str(risklength) + "</RISKLENGTH>\n" + " ".join(tokens) + "\n</DOC>\n"
 
-      # random selection -- randint should be (1,10)
-      selection = random.randint(1,2)
+      # random selection -- (0,9)
+      selection = random.randint(0,4)
 
       # Note - selection used to equal random.randint(1, 10)
       # Also, if selection == 2 used to be elif selection ==3
       # Overall we changed the split from 80/20 to 50/50
 
       if selection == 0:
-         dev.write(output)
+         train0.write(output)
+      elif selection == 1:
+         train1.write(output)
       elif selection == 2:
-         test.write(output)
+         train2.write(output)
+      elif selection == 3:
+         train3.write(output)
       else:
-         train.write(output)
-         
-   train.close()
-   dev.close()
-   test.close()
+         train4.write(output)
+      
+   
+   train0.close()
+   train1.close()
+   train2.close()
+   train3.close()
+   train4.close()
+   
+
